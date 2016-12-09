@@ -45,20 +45,19 @@ function insertCss(styles, { replace = false, prepend = false } = {}) {
   const ids = [];
   for (let i = 0; i < styles.length; i++) {
     const [moduleId, css, media, sourceMap] = styles[i];
-    const id = `${moduleId}-${i}`;
 
-    ids.push(id);
+    ids.push(moduleId);
 
-    if (inserted[id]) {
+    if (inserted[moduleId]) {
       if (!replace) {
-        inserted[id]++;
+        inserted[moduleId]++;
         continue;
       }
     }
 
-    inserted[id] = 1;
+    inserted[moduleId] = 1;
 
-    let elem = document.getElementById(prefix + id);
+    let elem = document.getElementById(prefix + moduleId);
     let create = false;
 
     if (!elem) {
@@ -66,7 +65,7 @@ function insertCss(styles, { replace = false, prepend = false } = {}) {
 
       elem = document.createElement('style');
       elem.setAttribute('type', 'text/css');
-      elem.id = prefix + id;
+      elem.id = prefix + moduleId;
 
       if (media) {
         elem.setAttribute('media', media);
@@ -77,7 +76,7 @@ function insertCss(styles, { replace = false, prepend = false } = {}) {
     if (sourceMap && typeof btoa === 'function') { // skip IE9 and below, see http://caniuse.com/atob-btoa
       cssText += `\n/*# sourceMappingURL=data:application/json;base64,${
         b64EncodeUnicode(JSON.stringify(sourceMap))}*/`;
-      cssText += `\n/*# sourceURL=${sourceMap.file}?${id}*/`;
+      cssText += `\n/*# sourceURL=${sourceMap.file}?${moduleId}*/`;
     }
 
     if ('textContent' in elem) {
